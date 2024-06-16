@@ -1,24 +1,49 @@
 package handlers
 
 import (
-    "fmt"
     "net/http"
+    "strconv"
+    "strings"
+
     "github.com/root-gabriel/metrics/pkg/storage"
 )
 
-func UpdateMetric(w http.ResponseWriter, r *http.Request) {
-    metric := r.URL.Query().Get("metric")
-    value := r.URL.Query().Get("value")
-    storage.UpdateMetric(metric, value)
-    fmt.Fprintf(w, "Updated metric %s to %s", metric, value)
-}
-
-func GetMetric(w http.ResponseWriter, r *http.Request) {
-    metric := r.URL.Query().Get("metric")
-    value, err := storage.GetMetric(metric)
-    if err != nil {
-        http.Error(w, "Metric not found", 404)
+// UpdateCounter обрабатывает запросы на обновление счетчиков
+func UpdateCounter(w http.ResponseWriter, r *http.Request) {
+    parts := strings.Split(strings.TrimPrefix(r.URL.Path, "/update/counter/"), "/")
+    if len(parts) != 2 {
+        http.Error(w, "Invalid request", 400)
         return
     }
-    fmt.Fprintf(w, "Value of metric %s is %s", metric, value)
+    metric, valueStr := parts[0], parts[1]
+    value, err := strconv.Atoi(valueStr)
+    if err != nil {
+        http.Error(w, "Invalid value", 400)
+        return
+    }
+    storage.UpdateCounter(metric, value)
+    w.WriteHeader(200)
 }
+
+// UpdateGauge обрабатывает запросы на обновление показателей
+func UpdateGauge(w http.ResponseWriter, r *http.Request) {
+    parts := strings.Split(strings.TrimPrefix(r.URL.Path, "/update/gauge/"), "/")
+    if len(parts) != 2 {
+        http.Error(w, "Invalid request", 400)
+        return
+    }
+    metric, valueStr := parts[0], parts[1]
+    value, err := strconv.ParseFloat(valueStr, 64)
+    if err != nil {
+        http.Error(w, "Invalid value", 400)
+        return
+    }
+    storage.UpdateGauge(metric, value)
+    w.WriteHeader(200)
+}
+
+// NotFound обрабатывает неизвестные маршруты
+func NotFound(w http.ResponseWriter, r *http.Request) {
+    http.Error(w, "Not found", 404)
+}
+

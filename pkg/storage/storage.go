@@ -1,25 +1,24 @@
 package storage
 
-import (
-    "sync"
-    "fmt"
+import "sync"
+
+var (
+    counters = make(map[string]int)
+    gauges   = make(map[string]float64)
+    mutex    = &sync.Mutex{}
 )
 
-var metrics = make(map[string]string)
-var mutex = &sync.Mutex{}
-
-func UpdateMetric(metric, value string) {
+// UpdateCounter обновляет значение счетчика
+func UpdateCounter(metric string, value int) {
     mutex.Lock()
     defer mutex.Unlock()
-    metrics[metric] = value
+    counters[metric] += value
 }
 
-func GetMetric(metric string) (string, error) {
+// UpdateGauge обновляет значение показателя
+func UpdateGauge(metric string, value float64) {
     mutex.Lock()
     defer mutex.Unlock()
-    value, exists := metrics[metric]
-    if !exists {
-        return "", fmt.Errorf("metric not found")
-    }
-    return value, nil
+    gauges[metric] = value
 }
+
