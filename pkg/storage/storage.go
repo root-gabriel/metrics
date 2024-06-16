@@ -22,3 +22,19 @@ func UpdateGauge(metric string, value float64) {
     gauges[metric] = value
 }
 
+// GetCounter возвращает значение счетчика
+func GetCounter(metric string) (int, bool) {
+    mutex.Lock()
+    defer mutex.Unlock()
+    value, found := counters[metric]
+    return value, found
+}
+
+// GetGauge возвращает значение показателя
+func GetGauge(metric string) (float64, bool) {
+    mutex.Lock()
+    defer mutex.Unlock()
+    value, found := gauges[metric]
+    return value, found
+}
+

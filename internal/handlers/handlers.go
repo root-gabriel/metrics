@@ -1,10 +1,10 @@
 package handlers
 
 import (
+    "fmt"
     "net/http"
     "strconv"
     "strings"
-
     "github.com/root-gabriel/metrics/pkg/storage"
 )
 
@@ -50,6 +50,38 @@ func UpdateGauge(w http.ResponseWriter, r *http.Request) {
     }
     storage.UpdateGauge(metric, value)
     w.WriteHeader(http.StatusOK)
+}
+
+// GetCounterValue возвращает значение счетчика
+func GetCounterValue(w http.ResponseWriter, r *http.Request) {
+    if r.Method != http.MethodGet {
+        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+        return
+    }
+
+    metric := strings.TrimPrefix(r.URL.Path, "/value/counter/")
+    value, found := storage.GetCounter(metric)
+    if !found {
+        http.Error(w, "Metric not found", http.StatusNotFound)
+        return
+    }
+    fmt.Fprintf(w, "%d", value)
+}
+
+// GetGaugeValue возвращает значение показателя
+func GetGaugeValue(w http.ResponseWriter, r *http.Request) {
+    if r.Method != http.MethodGet {
+        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+        return
+    }
+
+    metric := strings.TrimPrefix(r.URL.Path, "/value/gauge/")
+    value, found := storage.GetGauge(metric)
+    if !found {
+        http.Error(w, "Metric not found", http.StatusNotFound)
+        return
+    }
+    fmt.Fprintf(w, "%f", value)
 }
 
 // UpdateUnknown обрабатывает запросы с неизвестными типами метрик
