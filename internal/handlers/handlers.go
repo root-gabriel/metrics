@@ -4,6 +4,7 @@ import (
     "net/http"
     "strconv"
     "strings"
+
     "github.com/root-gabriel/metrics/pkg/storage"
 )
 
@@ -16,7 +17,7 @@ func UpdateCounter(w http.ResponseWriter, r *http.Request) {
 
     parts := strings.Split(strings.TrimPrefix(r.URL.Path, "/update/counter/"), "/")
     if len(parts) != 2 {
-        http.Error(w, "Invalid request", http.StatusBadRequest)
+        http.Error(w, "Invalid request", http.StatusNotFound)
         return
     }
     metric, valueStr := parts[0], parts[1]
@@ -38,7 +39,7 @@ func UpdateGauge(w http.ResponseWriter, r *http.Request) {
 
     parts := strings.Split(strings.TrimPrefix(r.URL.Path, "/update/gauge/"), "/")
     if len(parts) != 2 {
-        http.Error(w, "Invalid request", http.StatusBadRequest)
+        http.Error(w, "Invalid request", http.StatusNotFound)
         return
     }
     metric, valueStr := parts[0], parts[1]
