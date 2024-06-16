@@ -1,0 +1,20 @@
+package main
+
+import (
+    "log"
+    "net/http"
+    "github.com/root-gabriel/metrics/internal/handlers"
+)
+
+func main() {
+    http.HandleFunc("/update/counter/", handlers.UpdateCounter)
+    http.HandleFunc("/update/gauge/", handlers.UpdateGauge)
+    http.HandleFunc("/value/counter/", handlers.GetCounterValue)
+    http.HandleFunc("/value/gauge/", handlers.GetGaugeValue)
+    http.HandleFunc("/update/", handlers.UpdateUnknown)
+    http.HandleFunc("/", handlers.NotFound)
+
+    log.Println("Server is starting on port 8080...")
+    log.Fatal(http.ListenAndServe(":8080", nil))
+}
+
