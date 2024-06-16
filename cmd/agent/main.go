@@ -13,7 +13,7 @@ func sendTestMetrics() {
         req, err := http.NewRequest("POST", "http://localhost:8080/update/counter/testCounter/1", nil)
         if err != nil {
             log.Println("Error creating request:", err)
-            time.Sleep(1 * time.Second)
+            time.Sleep(100 * time.Millisecond)
             continue
         }
 
@@ -23,7 +23,7 @@ func sendTestMetrics() {
         } else {
             resp.Body.Close()
         }
-        time.Sleep(1 * time.Second)
+        time.Sleep(100 * time.Millisecond)
     }
 }
 
