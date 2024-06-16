@@ -9,6 +9,8 @@ import (
 func main() {
     http.HandleFunc("/update/counter/", handlers.UpdateCounter)
     http.HandleFunc("/update/gauge/", handlers.UpdateGauge)
+    http.HandleFunc("/value/counter/", handlers.GetCounterValue)
+    http.HandleFunc("/value/gauge/", handlers.GetGaugeValue)
     http.HandleFunc("/update/", handlers.UpdateUnknown)
     http.HandleFunc("/", handlers.NotFound)
 
