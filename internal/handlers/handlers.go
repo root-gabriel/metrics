@@ -2,6 +2,7 @@ package handlers
 
 import (
     "fmt"
+    "log"
     "net/http"
     "strconv"
     "strings"
@@ -26,6 +27,7 @@ func UpdateCounter(w http.ResponseWriter, r *http.Request) {
         http.Error(w, "Invalid value", http.StatusBadRequest)
         return
     }
+    log.Printf("Updating counter %s by %d\n", metric, value)
     storage.UpdateCounter(metric, value)
     w.WriteHeader(http.StatusOK)
 }
@@ -48,6 +50,7 @@ func UpdateGauge(w http.ResponseWriter, r *http.Request) {
         http.Error(w, "Invalid value", http.StatusBadRequest)
         return
     }
+    log.Printf("Updating gauge %s to %f\n", metric, value)
     storage.UpdateGauge(metric, value)
     w.WriteHeader(http.StatusOK)
 }
@@ -65,6 +68,7 @@ func GetCounterValue(w http.ResponseWriter, r *http.Request) {
         http.Error(w, "Metric not found", http.StatusNotFound)
         return
     }
+    log.Printf("Returning counter value for %s: %d\n", metric, value)
     fmt.Fprintf(w, "%d", value)
 }
 
@@ -81,26 +85,6 @@ func GetGaugeValue(w http.ResponseWriter, r *http.Request) {
         http.Error(w, "Metric not found", http.StatusNotFound)
         return
     }
-    fmt.Fprintf(w, "%f", value)
-}
-
-// UpdateUnknown обрабатывает запросы с неизвестными типами метрик
-func UpdateUnknown(w http.ResponseWriter, r *http.Request) {
-    if r.Method != http.MethodPost {
-        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-        return
-    }
-
-    parts := strings.Split(strings.TrimPrefix(r.URL.Path, "/update/"), "/")
-    if len(parts) != 3 {
-        http.Error(w, "Invalid request", http.StatusNotFound)
-        return
-    }
-    http.Error(w, "Invalid metric type", http.StatusNotImplemented)
-}
-
-// NotFound обрабатывает неизвестные маршруты
-func NotFound(w http.ResponseWriter, r *http.Request) {
-    http.Error(w, "Not found", http.StatusNotFound)
-}
+    log.Printf("Returning gauge value for %s: %f\n", metric, value)
+   
 
