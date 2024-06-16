@@ -10,7 +10,7 @@ import (
 func sendTestMetrics() {
     client := &http.Client{}
     for {
-        req, err := http.NewRequest("POST", "http://localhost:8080/update/counter/testCounter/1", nil)
+        req, err := http.NewRequest("POST", "http://127.0.0.1:8080/update/counter/testCounter/1", nil)
         if err != nil {
             log.Println("Error creating request:", err)
             time.Sleep(100 * time.Millisecond)
@@ -22,6 +22,7 @@ func sendTestMetrics() {
             log.Println("Error sending metric:", err)
         } else {
             resp.Body.Close()
+            log.Println("Successfully sent metric")
         }
         time.Sleep(100 * time.Millisecond)
     }
