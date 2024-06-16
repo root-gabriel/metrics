@@ -9,6 +9,7 @@ import (
 func main() {
     http.HandleFunc("/update/counter/", handlers.UpdateCounter)
     http.HandleFunc("/update/gauge/", handlers.UpdateGauge)
+    http.HandleFunc("/update/", handlers.UpdateUnknown)
     http.HandleFunc("/", handlers.NotFound)
 
     log.Println("Server is starting on port 8080...")
