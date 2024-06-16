@@ -21,6 +21,7 @@ func sendTestMetrics() {
         if err != nil {
             log.Println("Error sending metric:", err)
         } else {
+            log.Println("Updating counter testCounter by 1")
             resp.Body.Close()
             log.Println("Successfully sent metric")
         }
